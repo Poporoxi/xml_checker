@@ -1,4 +1,3 @@
-from tkinter import *
 import xml.etree.ElementTree as ET
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -34,11 +33,9 @@ def select_xml_file():
     root.withdraw()
     return filedialog.askopenfilename(filetypes=[("XML files", "*.xml"), ("All files", "*.*")])
 
-
 def select_log_file(xml_filename):
-    root = tk.Tk()
-    root.withdraw()
-    folder_path = filedialog.askdirectory(title="Выберите папку для сохранения лог-файла")
+    # Получаем папку, в которой находится XML-файл
+    folder_path = os.path.dirname(xml_filename)
     if folder_path:
         log_filename = os.path.splitext(os.path.basename(xml_filename))[0] + "_errors.txt"
         return os.path.join(folder_path, log_filename)
