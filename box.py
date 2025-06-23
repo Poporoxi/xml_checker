@@ -65,4 +65,11 @@ entry.bind("<Return>", lambda event: check_code())
 indicator = ctk.CTkLabel(app, text=" ", width=30, height=30, corner_radius=15, fg_color="gray")
 indicator.pack(pady=20)
 
+def on_close():
+    app.destroy()
+    sys.exit()
+
+app.protocol("WM_DELETE_WINDOW", on_close)
+
 app.mainloop()
+
