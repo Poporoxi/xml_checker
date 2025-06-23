@@ -31,7 +31,9 @@ def load_excise_codes(xml_path):
 
 # Проверка кода и отображение результата
 def check_code():
-    code = entry.get().strip()
+    scanned_code = entry.get().strip()
+    code = scanned_code.replace('\x1D', '')
+
     if not code:
         return
     if code in excise_codes:
