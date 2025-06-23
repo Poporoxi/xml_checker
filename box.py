@@ -38,10 +38,16 @@ def check_code():
         return
     if code in excise_codes:
         indicator.configure(fg_color="green")
+        winsound.Beep(1500, 100)
     else:
         indicator.configure(fg_color="red")
         winsound.Beep(1500, 100)
         time.sleep(0.1)
+        winsound.Beep(1500, 100)
+        time.sleep(0.1)
+        winsound.Beep(1500, 100)
+        time.sleep(0.1)
+
     entry.delete(0, ctk.END)  # Очистка ввода
 
 # Загрузка XML-файла
