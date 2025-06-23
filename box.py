@@ -1,3 +1,4 @@
+import sys
 import customtkinter as ctk
 import xml.etree.ElementTree as ET
 import tkinter as tk
@@ -41,6 +42,8 @@ def check_code():
 
 # Загрузка XML-файла
 xml_file = select_xml_file() # Укажи путь к XML-файлу
+if not xml_file:
+    sys.exit()
 excise_codes = load_excise_codes(xml_file)
 
 # Интерфейс
