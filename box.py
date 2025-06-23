@@ -3,8 +3,8 @@ import customtkinter as ctk
 import xml.etree.ElementTree as ET
 import tkinter as tk
 from tkinter import messagebox, filedialog
-
-
+import winsound
+import time
 # Настройки интерфейса
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("green")
@@ -40,6 +40,8 @@ def check_code():
         indicator.configure(fg_color="green")
     else:
         indicator.configure(fg_color="red")
+        winsound.Beep(1500, 100)
+        time.sleep(0.1)
     entry.delete(0, ctk.END)  # Очистка ввода
 
 # Загрузка XML-файла
