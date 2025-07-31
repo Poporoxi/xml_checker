@@ -50,9 +50,5 @@ def nim_game():
     input("Еще раз ?")
     nim_game()
 
-#hello()
-#nim_game()
-stones = random.randint(13, 30)
-print(stones)
-take = stones % 4
-print(take)
+hello()
+nim_game()
