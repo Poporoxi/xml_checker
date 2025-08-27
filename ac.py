@@ -7,8 +7,8 @@ from tkinter import messagebox
 
 # папки
 INPUT_FOLDER = r"C:\АСИиУ\Розлив\Файлы АСИиУ"
-OUTPUT_FOLDER = r"\\192.168.55.51\egais\Товарные наклданые\reports"
-LOG_FILE = r"\\192.168.55.51\egais\Товарные наклданые\reports\log\log.txt"
+OUTPUT_FOLDER = r"\\192.168.55.51\egais\Ежедневные отчеты производства"
+LOG_FILE = r"\\192.168.55.51\egais\Ежедневные отчеты производства\log\log.txt"
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
@@ -66,16 +66,28 @@ for filename in new_files:
                 # имя файла = start_date
                 report_name = f"{start_date}.txt"
                 report_path = os.path.join(OUTPUT_FOLDER, report_name)
+                try:
+                    with open(report_path, "a", encoding="utf-8") as rep:
+                        rep.write(f"Дата: {start_date}\n")
+                        rep.write(f"Код: {alc_code}\n")
+                        rep.write(f"Название: {full_name}\n")
+                        rep.write(f"Объем: {capacity}\n")
+                        rep.write(f"Крепость: {alc_volume}\n")
+                        rep.write(f"Количество: {qty}\n")
+                        rep.write("-" * 30 + "\n")
 
-                with open(report_path, "a", encoding="utf-8") as rep:
-                    rep.write(f"Дата: {start_date}\n")
-                    rep.write(f"Код: {alc_code}\n")
-                    rep.write(f"Название: {full_name}\n")
-                    rep.write(f"Объем: {capacity}\n")
-                    rep.write(f"Крепость: {alc_volume}\n")
-                    rep.write(f"Количество: {qty}\n")
-                    rep.write("-" * 30 + "\n")
+                except Exception:
+                    root = tk.Tk()
+                    root.withdraw()
+                    messagebox.showerror("Ошибка", f"Ошибка при записи файла: {Exception}")
+                    exit(1)
 
-    # обновляем лог
-    with open(LOG_FILE, "a", encoding="utf-8") as log:
-        log.write(filename + "\n")
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as log:
+            log.write(filename + "\n")
+
+    except Exception:
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("Ошибка", f"Ошибка при записи лога: {Exception}")
+        exit(1)
