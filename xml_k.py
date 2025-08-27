@@ -2,6 +2,7 @@ import os
 from collections import defaultdict
 from tkinter import filedialog, messagebox
 import xml.etree.ElementTree as ET
+import customtkinter as ctk
 
 REFERENCE = {
     "04630027300508": "04630027301727",
@@ -36,6 +37,34 @@ REFERENCE = {
     "04630027301802": "04630027301819",
 }
 
+
+def select_bottles():
+    def submit(value):
+        nonlocal bottles
+        bottles = value
+        root.destroy()  # Закрываем окно после выбора
+
+    ctk.set_appearance_mode("dark")  # Темный режим
+    ctk.set_default_color_theme("blue")
+
+    root = ctk.CTk()
+    root.title("Выбор количества")
+    root.geometry("300x200")
+
+    ctk.CTkLabel(root, text="Сколько бутылок в коробке?", font=("Arial", 16, "bold")).pack(pady=15)
+
+    ctk.CTkButton(root, text="12", command=lambda: submit(12), width=200).pack(pady=8)
+    ctk.CTkButton(root, text="6", command=lambda: submit(6), width=200).pack(pady=8)
+
+    bottles = 12
+    root.mainloop()
+
+    return bottles
+
+
+bottles = select_bottles()
+
+
 def select_file():
     file_path = filedialog.askopenfilename(
         title="Выберите XML файл",
@@ -43,6 +72,7 @@ def select_file():
     )
     if file_path:
         process_file(file_path)
+
 
 def process_file(file_path):
     try:
@@ -57,12 +87,16 @@ def process_file(file_path):
         errors = []
 
         # Собираем данные
+        full_barcode_map = defaultdict(list)  # для проверки по полным штрихкодам
+
+        # Собираем данные
         for i, row in enumerate(rows, start=1):
             aktsiz_el = row.find('Акциз')
             barcode_el = row.find('ШтрихкодКоробки')
 
             aktsiz_val = (aktsiz_el.text[2:16] if aktsiz_el is not None and aktsiz_el.text else '').strip()
             barcode_val = (barcode_el.text[2:16] if barcode_el is not None and barcode_el.text else '').strip()
+            full_barcode_val = (barcode_el.text.strip() if barcode_el is not None and barcode_el.text else '')
 
             # 1. Проверка на пустые значения
             if not aktsiz_val or not barcode_val:
@@ -71,6 +105,7 @@ def process_file(file_path):
 
             aktsiz_map[aktsiz_val].append(i)
             barcode_map[barcode_val].append(i)
+            full_barcode_map[full_barcode_val].append(i)
 
             # 3. Проверка на соответствие по справочнику
             if aktsiz_val in REFERENCE:
@@ -92,6 +127,11 @@ def process_file(file_path):
             if len(indices) == 1:
                 errors.append(f"Ошибка: КИГУ {val}")
 
+        # 🔹 Новая проверка количества штрихкодов на коробку (по полному значению)
+        for val, indices in full_barcode_map.items():
+            if len(indices) != bottles:
+                errors.append(f"Неверное количество {val}")
+
         # Итог
         if errors:
             base_name = os.path.splitext(os.path.basename(file_path))[0]  # имя исходного файла без .xml
@@ -106,9 +146,6 @@ def process_file(file_path):
 
     except Exception as e:
         messagebox.showerror("Ошибка", str(e))
-
-
-
 
 
 if __name__ == '__main__':
