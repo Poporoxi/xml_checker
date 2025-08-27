@@ -3,12 +3,12 @@ import xml.etree.ElementTree as ET
 
 import tkinter as tk
 from tkinter import messagebox
-from datetime import datetime, timedelta
+
 
 # папки
-INPUT_FOLDER = r"C:\Users\Pavel\Desktop\afqks"
-OUTPUT_FOLDER = r"C:\Users\Pavel\Desktop\afqks\reports"
-LOG_FILE = r"C:\Users\Pavel\Desktop\afqks\reports\log.txt"
+INPUT_FOLDER = r"C:\АСИиУ\Розлив\Файлы АСИиУ"
+OUTPUT_FOLDER = r"\\192.168.55.51\egais\Товарные наклданые\reports"
+LOG_FILE = r"\\192.168.55.51\egais\Товарные наклданые\reports\log\log.txt"
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
@@ -74,6 +74,7 @@ for filename in new_files:
                     rep.write(f"Объем: {capacity}\n")
                     rep.write(f"Крепость: {alc_volume}\n")
                     rep.write(f"Количество: {qty}\n")
+                    rep.write("-" * 30 + "\n")
 
     # обновляем лог
     with open(LOG_FILE, "a", encoding="utf-8") as log:
