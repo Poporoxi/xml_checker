@@ -1,4 +1,5 @@
 import os
+import sys
 import xml.etree.ElementTree as ET
 
 import tkinter as tk
@@ -27,12 +28,12 @@ if len(new_files) == 0:
     root = tk.Tk()
     root.withdraw()
     messagebox.showerror("Ошибка", "Новых файлов для обработки нет!")
-    exit(1)
+    sys.exit(1)
 elif len(new_files) < 4:
     root = tk.Tk()
     root.withdraw()
     messagebox.showerror("Ошибка", f"Ожидалось 4 файла, найдено только {len(new_files)}!")
-    exit(1)
+    sys.exit(1)
 
 
 
@@ -80,7 +81,22 @@ for filename in new_files:
                     root = tk.Tk()
                     root.withdraw()
                     messagebox.showerror("Ошибка", f"Ошибка при записи файла: {Exception}")
-                    exit(1)
+                    sys.exit(1)
+
+        else:
+            start_date = pos.findtext("as:StartDate", "", ns).split("T")[0]  # YYYY-MM-DD
+            report_name = f"{start_date}.txt"
+            report_path = os.path.join(OUTPUT_FOLDER, report_name)
+            try:
+                with open(report_path, "w", encoding="utf-8") as rep:
+                    rep.write(f"{start_date} алкоголь не производился")
+
+
+            except Exception:
+                root = tk.Tk()
+                root.withdraw()
+                messagebox.showerror("Ошибка", f"Ошибка при записи файла: {Exception}")
+                sys.exit(1)
 
     try:
         with open(LOG_FILE, "a", encoding="utf-8") as log:
@@ -90,4 +106,4 @@ for filename in new_files:
         root = tk.Tk()
         root.withdraw()
         messagebox.showerror("Ошибка", f"Ошибка при записи лога: {Exception}")
-        exit(1)
+        sys.exit(1)
